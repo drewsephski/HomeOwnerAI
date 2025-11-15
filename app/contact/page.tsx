@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import { Mail, MapPin, Send, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { BusinessOrganizer } from "@/components/BusinessOrganizer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,15 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [activeTab, setActiveTab] = useState("simple");
+
+  const handleAddOrganizedInfo = (organizedInfo: string) => {
+    setFormData(prev => ({
+      ...prev,
+      message: prev.message ? `${prev.message}\n\n${organizedInfo}` : organizedInfo
+    }));
+    setActiveTab("simple");
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -93,90 +104,114 @@ export default function Contact() {
 
       {/* Contact Form */}
       <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <Card className="shadow-lg border-0 bg-linear-to-br from-card to-card/50">
-            <CardHeader className="text-center pb-8">
-              <CardTitle className="text-2xl font-bold">Get in Touch</CardTitle>
-              <CardDescription className="text-lg">
-                Ready to transform your home service business? Let&apos;s talk.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-8 pb-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="John Doe"
-                      className="h-12 text-base"
-                    />
+            <CardContent className="p-8">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-8">
+                  <TabsTrigger value="simple">Quick Message</TabsTrigger>
+                  <TabsTrigger value="organized">Business Organizer</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="simple" className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={handleChange}
+                          placeholder="John Doe"
+                          className="h-12 text-base"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="john@example.com"
+                          className="h-12 text-base"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="company" className="text-sm font-medium">Company</Label>
+                      <Input
+                        id="company"
+                        name="company"
+                        type="text"
+                        value={formData.company}
+                        onChange={handleChange}
+                        placeholder="Your Home Service Company"
+                        className="h-12 text-base"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="message" className="text-sm font-medium">Message *</Label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows={4}
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder="Tell us about your business and what you're looking for..."
+                        className="text-base resize-none"
+                      />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Want to include detailed business information? Try the 
+                        <button 
+                          type="button" 
+                          onClick={() => setActiveTab("organized")}
+                          className="text-primary hover:underline ml-1"
+                        >
+                          Business Organizer
+                        </button>
+                        {" "}to create a professional, formatted business profile.
+                      </p>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 text-base font-medium" 
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
+
+                <TabsContent value="organized" className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h3 className="text-lg font-medium mb-2">Professional Business Information</h3>
+                    <p className="text-muted-foreground">
+                      Use our AI-powered organizer to create a beautifully formatted business profile that you can send directly or copy to your message.
+                    </p>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="john@example.com"
-                      className="h-12 text-base"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="company" className="text-sm font-medium">Company</Label>
-                  <Input
-                    id="company"
-                    name="company"
-                    type="text"
-                    value={formData.company}
-                    onChange={handleChange}
-                    placeholder="Your Home Service Company"
-                    className="h-12 text-base"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="text-sm font-medium">Message *</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={4}
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell us about your business and what you're looking for..."
-                    className="text-base resize-none"
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 text-base font-medium" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      Send Message
-                    </>
-                  )}
-                </Button>
-              </form>
+                  <BusinessOrganizer onSendOrganizedInfo={handleAddOrganizedInfo} />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
 

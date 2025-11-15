@@ -109,6 +109,8 @@ export async function upsertUserProfile(userId: string, email: string, profile: 
   phone?: string | null
   business_name?: string | null
 }) {
+  console.log('Upserting user profile:', { userId, email, profile });
+  
   const { data, error } = await supabase
     .from('users')
     .upsert({
@@ -122,6 +124,7 @@ export async function upsertUserProfile(userId: string, email: string, profile: 
 
   if (error) {
     console.error('Error upserting user profile:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
     return null
   }
 

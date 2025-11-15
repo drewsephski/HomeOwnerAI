@@ -1,10 +1,11 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Toaster } from '@/components/ui/sonner'
+import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/components/auth-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 import Navigation from '@/components/Navigation'
+import { ChatWidget } from '@/components/ChatWidget'
 
 // Make function globally available
 declare global {
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+        <body className={inter.className} suppressHydrationWarning>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -37,6 +38,7 @@ export default function RootLayout({
           >
             <Navigation />
             <AuthProvider>
+              <ChatWidget size="large" />
               {children}
             </AuthProvider>
             <Toaster />

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, Calendar, BarChart3, MessageCircle } from "lucide-react";
-import { ChatWidget } from "@/components/ChatWidget";
 
 const Home = () => {
   const openLargeChat = () => {
@@ -14,7 +13,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <ChatWidget size="large" />
 
       {/* Hero Section - Calm, Confident, Direct */}
       <motion.section
@@ -64,6 +62,7 @@ const Home = () => {
           </motion.div>
         </div>  
       </motion.section>
+      
 
       {/* Features Grid - Deliberate Spacing */}
       <motion.section

@@ -242,7 +242,7 @@ export default function Pricing() {
             </div>
             
             <div className="grid grid-cols-3 border-b">
-              <div className="p-4">Analytics Dashboard</div>
+              <div className="p-4">Analytics & Reports</div>
               <div className="p-4 text-center">Basic</div>
               <div className="p-4 text-center">Advanced</div>
             </div>

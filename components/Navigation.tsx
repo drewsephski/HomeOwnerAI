@@ -21,10 +21,6 @@ const navigationItems = [
     label: "Get Started",
   },
   {
-    href: "/dashboard",
-    label: "Dashboard",
-  },
-  {
     href: "/settings",
     label: "Settings",
   },
