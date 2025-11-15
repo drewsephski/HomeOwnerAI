@@ -14,6 +14,7 @@ interface AIVoiceInputProps {
   demoInterval?: number;
   className?: string;
   onTranscript?: (transcript: string) => void;
+  resetOnStart?: boolean;
 }
 
 export function AIVoiceInput({
@@ -23,7 +24,8 @@ export function AIVoiceInput({
   demoMode = false,
   demoInterval = 3000,
   className,
-  onTranscript
+  onTranscript,
+  resetOnStart = true
 }: AIVoiceInputProps) {
   const [submitted, setSubmitted] = useState(false);
   const [time, setTime] = useState(0);
@@ -135,8 +137,10 @@ export function AIVoiceInput({
       SpeechRecognition.stopListening();
       setSubmitted(false);
     } else {
-      // Start listening
-      resetTranscript();
+      // Start listening - reset transcript only if resetOnStart is true
+      if (resetOnStart) {
+        resetTranscript();
+      }
       setSubmitted(true);
       SpeechRecognition.startListening({
         continuous: true,

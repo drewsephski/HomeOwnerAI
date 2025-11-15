@@ -28,6 +28,7 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
     const [isLoading, setIsLoading] = useState(false);
     const [voiceTranscript, setVoiceTranscript] = useState("");
     const [isListening, setIsListening] = useState(false);
+    const [isManualTyping, setIsManualTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,26 +47,30 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
         scrollToBottom();
     }, [messages]);
 
-    // Update input when voice transcript changes
+    // Update input when voice transcript changes, but only if user isn't manually typing
     useEffect(() => {
-        if (voiceTranscript) {
+        if (voiceTranscript && isListening && !isManualTyping) {
             setInput(voiceTranscript);
         }
-    }, [voiceTranscript]);
+    }, [voiceTranscript, isListening, isManualTyping]);
 
     const openRouter = new OpenRouter({
         apiKey: process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || "",
     });
+
+    // Debug: Log API key availability
+    console.log("OpenRouter API Key available:", !!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY);
 
     const handleVoiceStart = () => {
         // Open chat if not already open
         if (!isOpen) {
             setIsOpen(true);
         }
-        // Clear previous transcript and input
+        // Clear previous transcript and input only when starting fresh
         setVoiceTranscript("");
         setInput("");
         setIsListening(true);
+        setIsManualTyping(false); // Reset manual typing when voice starts
     };
 
     const handleVoiceStop = (duration: number, transcript?: string) => {
@@ -73,17 +78,25 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
         if (transcript && transcript.trim()) {
             setInput(transcript.trim());
         }
-        // Clear voice transcript state
-        setVoiceTranscript("");
+        // Don't clear voiceTranscript immediately - let it persist until next voice start
         setIsListening(false);
     };
 
     const handleTranscriptUpdate = (transcript: string) => {
         // Update input field with live transcript
-        if (transcript.trim()) {
+        if (transcript.trim() && !isManualTyping) {
             setInput(transcript);
         }
         setVoiceTranscript(transcript);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInput(value);
+        // If user is typing manually, set manual typing flag
+        if (!isListening) {
+            setIsManualTyping(true);
+        }
     };
 
     const handleSendMessage = async () => {
@@ -99,11 +112,14 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
         setMessages((prev) => [...prev, userMessage]);
         setInput("");
         setVoiceTranscript(""); // Clear voice transcript when sending
+        setIsListening(false); // Also stop listening state
+        setIsManualTyping(false); // Reset manual typing flag
         setIsLoading(true);
 
         try {
+            console.log("Sending message to AI:", input.trim());
             const result = await openRouter.chat.send({
-                model: "openai/gpt-oss-20b:free",
+                model: "z-ai/glm-4.5-air:free",
                 messages: [
                     {
                         role: "system",
@@ -181,6 +197,8 @@ Perfect for plumbers, electricians, HVAC companies, general contractors, and any
                 maxTokens: 150,
                 temperature: 0.3,
             });
+
+            console.log("AI Response received:", result);
 
             const assistantMessage: Message = {
                 id: (Date.now() + 1).toString(),
@@ -343,7 +361,7 @@ Perfect for plumbers, electricians, HVAC companies, general contractors, and any
                                 <Input
                                     ref={inputRef}
                                     value={input}
-                                    onChange={(e) => setInput(e.target.value)}
+                                    onChange={handleInputChange}
                                     onKeyPress={handleKeyPress}
                                     placeholder={isListening ? "Listening..." : "Type your message..."}
                                     disabled={isLoading}
@@ -377,6 +395,7 @@ Perfect for plumbers, electricians, HVAC companies, general contractors, and any
                                 onStop={handleVoiceStop}
                                 onTranscript={handleTranscriptUpdate}
                                 visualizerBars={24}
+                                resetOnStart={true}
                             />
                         </div>
                     </div>
