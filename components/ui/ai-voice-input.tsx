@@ -3,14 +3,17 @@
 import { Mic } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useSpeechRecognition } from "react-speech-recognition";
+import SpeechRecognition from "react-speech-recognition";
 
 interface AIVoiceInputProps {
   onStart?: () => void;
-  onStop?: (duration: number) => void;
+  onStop?: (duration: number, transcript?: string) => void;
   visualizerBars?: number;
   demoMode?: boolean;
   demoInterval?: number;
   className?: string;
+  onTranscript?: (transcript: string) => void;
 }
 
 export function AIVoiceInput({
@@ -19,19 +22,49 @@ export function AIVoiceInput({
   visualizerBars = 48,
   demoMode = false,
   demoInterval = 3000,
-  className
+  className,
+  onTranscript
 }: AIVoiceInputProps) {
   const [submitted, setSubmitted] = useState(false);
   const [time, setTime] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const [isDemo, setIsDemo] = useState(demoMode);
 
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
   useEffect(() => {
-    setIsClient(true);
+    const timer = setTimeout(() => setIsClient(true), 0);
+    return () => clearTimeout(timer);
   }, []);
+
+  // Update transcript when it changes
+  useEffect(() => {
+    if (transcript && onTranscript) {
+      onTranscript(transcript);
+    }
+  }, [transcript, onTranscript]);
+
+  // Handle speech recognition end
+  useEffect(() => {
+    if (!listening && submitted && transcript.trim()) {
+      // Speech recognition just ended and we have a transcript
+      // Use a small delay to ensure transcript is fully captured
+      const timer = setTimeout(() => {
+        setSubmitted(false);
+        onStop?.(time, transcript);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [listening, submitted, transcript, time, onStop]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
+    let resetTimerId: NodeJS.Timeout;
 
     if (submitted) {
       onStart?.();
@@ -40,10 +73,13 @@ export function AIVoiceInput({
       }, 1000);
     } else {
       onStop?.(time);
-      setTime(0);
+      resetTimerId = setTimeout(() => setTime(0), 0);
     }
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(resetTimerId);
+    };
   }, [submitted, time, onStart, onStop]);
 
   useEffect(() => {
@@ -72,11 +108,29 @@ export function AIVoiceInput({
   };
 
   const handleClick = () => {
+    if (!browserSupportsSpeechRecognition) {
+      alert("Your browser doesn't support speech recognition.");
+      return;
+    }
+
     if (isDemo) {
       setIsDemo(false);
       setSubmitted(false);
+      return;
+    }
+
+    if (listening) {
+      // Stop listening
+      SpeechRecognition.stopListening();
+      setSubmitted(false);
     } else {
-      setSubmitted((prev) => !prev);
+      // Start listening
+      resetTranscript();
+      setSubmitted(true);
+      SpeechRecognition.startListening({
+        continuous: false,
+        language: 'en-US',
+      });
     }
   };
 
@@ -115,25 +169,28 @@ export function AIVoiceInput({
         </span>
 
         <div className="h-4 w-64 flex items-center justify-center gap-0.5">
-          {[...Array(visualizerBars)].map((_, i) => (
-            <div
-              key={i}
-              className={cn(
-                "w-0.5 rounded-full transition-all duration-300",
-                submitted
-                  ? "bg-black/50 dark:bg-white/50 animate-pulse"
-                  : "bg-black/10 dark:bg-white/10 h-1"
-              )}
-              style={
-                submitted && isClient
-                  ? {
-                      height: `${20 + Math.random() * 80}%`,
-                      animationDelay: `${i * 0.05}s`,
-                    }
-                  : undefined
-              }
-            />
-          ))}
+          {[...Array(visualizerBars)].map((_, i) => {
+            const height = 20 + ((i * 7) % 80); // Deterministic height based on index
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "w-0.5 rounded-full transition-all duration-300",
+                  submitted
+                    ? "bg-black/50 dark:bg-white/50 animate-pulse"
+                    : "bg-black/10 dark:bg-white/10 h-1"
+                )}
+                style={
+                  submitted && isClient
+                    ? {
+                        height: `${height}%`,
+                        animationDelay: `${i * 0.05}s`,
+                      }
+                    : undefined
+                }
+              />
+            );
+          })}
         </div>
 
         <p className="h-4 text-xs text-black/70 dark:text-white/70">

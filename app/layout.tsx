@@ -4,6 +4,13 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/components/auth-provider'
 
+// Make function globally available
+declare global {
+  interface Window {
+    openChatWidget: () => void;
+  }
+}
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -24,6 +31,13 @@ export default function RootLayout({
             {children}
           </AuthProvider>
           <Toaster />
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              window.openChatWidget = function() {
+                window.dispatchEvent(new CustomEvent('openChatWidget'));
+              }
+            `
+          }} />
         </body>
       </html>
     </ClerkProvider>

@@ -2,15 +2,20 @@
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
-import { Phone, Calendar, BarChart3 } from "lucide-react";
-import { AIVoiceInputDemo } from "@/components/VoiceInput";
-import Link from "next/link";
-import { SimpleVapiWidget } from '@/components/vapi-widget';
+import { Phone, Calendar, BarChart3, MessageCircle } from "lucide-react";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const Home = () => {
+  const openLargeChat = () => {
+    if (typeof window !== 'undefined') {
+      window.openChatWidget();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <ChatWidget size="large" />
 
       {/* Hero Section - Calm, Confident, Direct */}
       <motion.section
@@ -44,20 +49,21 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
+            className="space-y-4"
           >
-            <Link
-              href="/setup"
+            <Button
+              onClick={openLargeChat}
+              size="lg"
               className="btn-lift px-8 py-4 inline-flex items-center justify-center rounded-md text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
             >
-              48 Hour Setup
-            </Link>
-            <p className="text-sm text-muted-foreground mt-4 font-light">
-              No credit card required
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Chat with AI Assistant
+            </Button>
+            <p className="text-sm text-muted-foreground font-light">
+              Get instant answers about our AI receptionist service
             </p>
           </motion.div>
-        </div>
-        <AIVoiceInputDemo />
-        <SimpleVapiWidget />
+        </div>  
       </motion.section>
 
       {/* Features Grid - Deliberate Spacing */}
