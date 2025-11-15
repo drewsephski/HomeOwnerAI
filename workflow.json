@@ -1,0 +1,910 @@
+{
+  "name": "Appointment Scheduler",
+  "nodes": [
+    {
+      "name": "start",
+      "type": "conversation",
+      "isStart": true,
+      "metadata": {
+        "position": {
+          "x": -705.8237557575243,
+          "y": -740.9114717829991
+        }
+      },
+      "prompt": "Listen for service requests (new job), rescheduling, cancellations, or general questions. If they mention hazards (gas leak, smoke, electrical burning), route to urgent_triage immediately.",
+      "messagePlan": {
+        "firstMessage": " Thank you for calling. I’m your virtual assistant for home services. How can I help you today?"
+      },
+      "toolIds": []
+    },
+    {
+      "name": "customer_type",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1240.1686373621815,
+          "y": -71.24768730149242
+        }
+      },
+      "prompt": "Are you a new customer, or have we helped you before?",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "new",
+              "existing"
+            ],
+            "type": "string",
+            "title": "customer_type",
+            "description": "Whether the patient is new or existing"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "new_appointment",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1708.360254530412,
+          "y": 237.06273159362348
+        }
+      },
+      "prompt": "What type of service do you need today (plumbing, HVAC, electrical, painting, handyman, roofing, pest control, cleaning)? Do you have a preferred technician or want the first available? Please also tell me if this is urgent or can wait for the next open window.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "Primary Care",
+              "Specialist",
+              "Diagnostic",
+              "Wellness",
+              "Urgent Care"
+            ],
+            "type": "string",
+            "title": "appointment_type",
+            "description": "Type of appointment needed"
+          },
+          {
+            "enum": [
+              "urgent",
+              "routine"
+            ],
+            "type": "string",
+            "title": "urgency",
+            "description": "Urgency level"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "reschedule_cancel",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -388.5315683262705,
+          "y": -17.01201596644613
+        }
+      },
+      "prompt": "I can help with that. Please provide your name and the phone number on your booking so I can locate your appointment. Do you want to reschedule or cancel?\n",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "patient_name",
+            "description": "Patient's full name"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "date_of_birth",
+            "description": "Patient's date of birth"
+          },
+          {
+            "enum": [
+              "reschedule",
+              "cancel"
+            ],
+            "type": "string",
+            "title": "action_type",
+            "description": "Whether to reschedule or cancel"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "general_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 601.689673579884,
+          "y": -61.76826158709963
+        }
+      },
+      "prompt": "We serve residential and light commercial clients. Hours: Monday–Friday 8am–6pm, Saturday 9am–2pm. After-hours urgent dispatch is limited. We’re licensed and insured, and accept major cards and contactless payments. Would you like to schedule service or ask anything else?",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "schedule",
+              "done"
+            ],
+            "type": "string",
+            "title": "next_action",
+            "description": "Whether they want to schedule or are done"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "urgent_triage",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -2179.381375516301,
+          "y": 684.8560609666594
+        }
+      },
+      "prompt": "Ask: Can you briefly describe the issue? If you smell gas, see smoke, or have exposed live electrical wires, leave the area and contact your utility or emergency services immediately. For urgent but non-hazard issues like burst pipes or no heat, I can offer same-day windows.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "emergency",
+              "urgent_care",
+              "same_day"
+            ],
+            "type": "string",
+            "title": "urgency_level",
+            "description": "Determined urgency level"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "collect_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1114.5788793156357,
+          "y": 682.2564251737896
+        }
+      },
+      "prompt": "I’ll grab your details. For new customers: I need your full name, service address, and phone number. For existing customers: I need your name and the phone number on your account to access your record.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "patient_name",
+            "description": "Patient's full name"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "date_of_birth",
+            "description": "Patient's date of birth"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "phone_number",
+            "description": "Contact phone number"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "collect_info_urgent",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1614.2875702305894,
+          "y": 1047.4686774081297
+        }
+      },
+      "prompt": "For an urgent visit, I’ll collect your details. For new customers: I need your full name, service address, and phone number. For existing customers: I need your name and the phone number on your account to access your record.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "patient_name",
+            "description": "Patient's full name"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "date_of_birth",
+            "description": "Patient's date of birth"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "phone_number",
+            "description": "Contact phone number"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "reschedule",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -824.5778884545254,
+          "y": 377.08088524366764
+        }
+      },
+      "prompt": "Say: 'I found your appointment on [date] during [time window]. New options are [date/time window] or [date/time window]. Which should I book?'",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "new_date",
+            "description": "New appointment date"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "new_time",
+            "description": "New appointment time"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "cancel",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 147.93532206014737,
+          "y": 377.4354946926693
+        }
+      },
+      "prompt": "Say: ' I can cancel your appointment on [date/time window]. Same-day cancellations may incur a service call fee if a technician was dispatched. Would you like to cancel or reschedule instead?'",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "cancel_only",
+              "reschedule_instead"
+            ],
+            "type": "string",
+            "title": "final_action",
+            "description": "Final action - cancel only or reschedule instead"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "reschedule_from_cancel",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 431.8514302435383,
+          "y": 815.4522480422324
+        }
+      },
+      "prompt": "Say: 'No problem, we’ll reschedule instead. Available slots are [date/time window] or [date/time window]. Which works best?'",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "new_date",
+            "description": "New appointment date"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "new_time",
+            "description": "New appointment time"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "new_appointment_from_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 1025.7349492714222,
+          "y": 574.923126813525
+        }
+      },
+      "prompt": "Ask: 'What type of service do you need today (plumbing, HVAC, electrical, painting, etc.)? Do you have a technician preference or want the first available? Is this urgent?' Assess urgency level based on their needs.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "Primary Care",
+              "Specialist",
+              "Diagnostic",
+              "Wellness",
+              "Urgent Care"
+            ],
+            "type": "string",
+            "title": "appointment_type",
+            "description": "Type of appointment needed"
+          },
+          {
+            "enum": [
+              "urgent",
+              "routine"
+            ],
+            "type": "string",
+            "title": "urgency",
+            "description": "Urgency level"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "collect_info_from_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 1038.0206465867557,
+          "y": 1178.539791727536
+        }
+      },
+      "prompt": "'I’ll collect your details.' For new customers: full name, service address, and phone number. For existing customers: name and phone number on your account.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "patient_name",
+            "description": "Patient's full name"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "date_of_birth",
+            "description": "Patient's date of birth"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "phone_number",
+            "description": "Contact phone number"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "emergency_redirect",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -2172.0725551893065,
+          "y": 2040.6018544637946
+        }
+      },
+      "prompt": "Say: 'This sounds hazardous. Leave the area if needed and contact emergency services or your utility immediately. I can share non-urgent scheduling options once it’s safe.' Be calm but urgent.",
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "schedule_time",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1148.0525139142742,
+          "y": 1215.7805533900807
+        }
+      },
+      "prompt": "Say: 'For {{appointment_type}}, I have [date] during [time window], or [date] during [time window]. Which works better?'",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_date",
+            "description": "Selected appointment date"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_time",
+            "description": "Selected appointment time"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "schedule_time_urgent",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1609.9153244668883,
+          "y": 1754.1229488448632
+        }
+      },
+      "prompt": "Offer urgent appointment times: 'Since this is urgent {{appointment_type}}, we have same-day options: [time window] or [time window]. Which do you prefer?' Confirm their selection.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_date",
+            "description": "Selected appointment date"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_time",
+            "description": "Selected appointment time"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "schedule_time_from_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 757.6013264436771,
+          "y": 1785.3254984150433
+        }
+      },
+      "prompt": "Offer times: 'For {{appointment_type}}, I can do [date/time window] or [date/time window]. Which works better?' Confirm their selection.",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_date",
+            "description": "Selected appointment date"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "selected_time",
+            "description": "Selected appointment time"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "confirm_appointment",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1132.127362311608,
+          "y": 1614.4657606230528
+        }
+      },
+      "prompt": " You’re scheduled for {{appointment_type}} on {{selected_date}} during {{selected_time}}. Please ensure someone 18 or older is present and clear the work area for safe access. Would you like SMS or email reminders?",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "type": "string",
+            "title": "wants_reminder",
+            "description": "Wants appointment reminder"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "confirm_appointment_urgent",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -1613.8617892564346,
+          "y": 2763.862858198111
+        }
+      },
+      "prompt": "Confirm: 'You’re scheduled for urgent {{appointment_type}} on {{selected_date}} during {{selected_time}}. Please ensure safe access and that someone 18 or older is present. We’ll prioritize dispatch.' ",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "type": "string",
+            "title": "wants_reminder",
+            "description": "Wants appointment reminder"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "confirm_appointment_from_info",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": 119.65324282988126,
+          "y": 2239.352548168435
+        }
+      },
+      "prompt": "Confirm: 'You’re scheduled for {{appointment_type}} on {{selected_date}} during {{selected_time}}. Please ensure someone 18 or older is present and clear the work area. Would you like SMS or email reminders?'",
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "type": "string",
+            "title": "wants_reminder",
+            "description": "Wants appointment reminder"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "node_1748494934592",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -376.7974975872237,
+          "y": 675.5284771151985
+        }
+      },
+      "prompt": "Confirm the caller wants to speak to a human and ask what they’d like to discuss so you can route them to the right team member.\n\n",
+      "globalNodePlan": {
+        "enabled": true,
+        "enterCondition": "User wants to speak to a human"
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    },
+    {
+      "name": "Transfer Call",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -375.9767952648924,
+          "y": 1123.1717656873398
+        }
+      },
+      "tool": {
+        "type": "transferCall"
+      }
+    },
+    {
+      "name": "hangup_1748495964695",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -426.39230618314684,
+          "y": 3079.3988415343943
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Thank you for calling. We look forward to helping you.\n",
+            "blocking": true
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "customer_type",
+      "condition": {
+        "type": "ai",
+        "prompt": "User wanted to schedule a new appointment"
+      }
+    },
+    {
+      "from": "start",
+      "to": "reschedule_cancel",
+      "condition": {
+        "type": "ai",
+        "prompt": "User wanted to reschedule or cancel an appointment"
+      }
+    },
+    {
+      "from": "start",
+      "to": "general_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "User had questions about clinic info, hours, or services"
+      }
+    },
+    {
+      "from": "customer_type",
+      "to": "new_appointment",
+      "condition": {
+        "type": "ai",
+        "prompt": "User type determined, ready to proceed with appointment scheduling"
+      }
+    },
+    {
+      "from": "new_appointment",
+      "to": "urgent_triage",
+      "condition": {
+        "type": "ai",
+        "prompt": "User indicated urgent care need"
+      }
+    },
+    {
+      "from": "new_appointment",
+      "to": "collect_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "User neede routine appointment"
+      }
+    },
+    {
+      "from": "reschedule_cancel",
+      "to": "reschedule",
+      "condition": {
+        "type": "ai",
+        "prompt": "User wated to reschedule appointment"
+      }
+    },
+    {
+      "from": "reschedule_cancel",
+      "to": "cancel",
+      "condition": {
+        "type": "ai",
+        "prompt": "User wanted to cancel appointment"
+      }
+    },
+    {
+      "from": "general_info",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "User's questions answered, no further help needed"
+      }
+    },
+    {
+      "from": "urgent_triage",
+      "to": "emergency_redirect",
+      "condition": {
+        "type": "ai",
+        "prompt": "Symptoms indicate medical emergency"
+      }
+    },
+    {
+      "from": "urgent_triage",
+      "to": "collect_info_urgent",
+      "condition": {
+        "type": "ai",
+        "prompt": "Urgent but not emergency, can schedule same-day"
+      }
+    },
+    {
+      "from": "collect_info",
+      "to": "schedule_time",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient information collected successfully"
+      }
+    },
+    {
+      "from": "collect_info_urgent",
+      "to": "schedule_time_urgent",
+      "condition": {
+        "type": "ai",
+        "prompt": "Urgent patient information collected successfully"
+      }
+    },
+    {
+      "from": "reschedule",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment successfully rescheduled"
+      }
+    },
+    {
+      "from": "cancel",
+      "to": "reschedule_from_cancel",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient wants to reschedule instead of cancel"
+      }
+    },
+    {
+      "from": "cancel",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment canceled, no reschedule needed"
+      }
+    },
+    {
+      "from": "reschedule_from_cancel",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment rescheduled from cancellation"
+      }
+    },
+    {
+      "from": "new_appointment_from_info",
+      "to": "collect_info_from_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment type determined after general info"
+      }
+    },
+    {
+      "from": "emergency_redirect",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Emergency guidance provided"
+      }
+    },
+    {
+      "from": "schedule_time",
+      "to": "confirm_appointment",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient selected appointment time"
+      }
+    },
+    {
+      "from": "schedule_time_urgent",
+      "to": "confirm_appointment_urgent",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient selected urgent appointment time"
+      }
+    },
+    {
+      "from": "collect_info_from_info",
+      "to": "schedule_time_from_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient information collected after general info"
+      }
+    },
+    {
+      "from": "schedule_time_from_info",
+      "to": "confirm_appointment_from_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient selected appointment time after general info"
+      }
+    },
+    {
+      "from": "confirm_appointment",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment confirmed and instructions given"
+      }
+    },
+    {
+      "from": "confirm_appointment_urgent",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Urgent appointment confirmed and instructions given"
+      }
+    },
+    {
+      "from": "confirm_appointment_from_info",
+      "to": "hangup_1748495964695",
+      "condition": {
+        "type": "ai",
+        "prompt": "Appointment confirmed after general info flow"
+      }
+    },
+    {
+      "from": "node_1748494934592",
+      "to": "Transfer Call",
+      "condition": {
+        "type": "ai",
+        "prompt": "User confirms they want to speak to a human and describes what they want to speak about"
+      }
+    },
+    {
+      "from": "general_info",
+      "to": "new_appointment_from_info",
+      "condition": {
+        "type": "ai",
+        "prompt": "user said yes"
+      }
+    }
+  ],
+  "voice": {
+    "voiceId": "Rohan",
+    "provider": "vapi"
+  },
+  "globalPrompt": ""
+}
