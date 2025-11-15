@@ -2,15 +2,9 @@
 
 import { useAuth, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Settings } from "lucide-react";
-import Link from "next/link";
 
 export function UserMenu() {
-  const { isSignedIn, signOut } = useAuth();
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
+  const { isSignedIn } = useAuth();
 
   if (!isSignedIn) {
     return (
@@ -73,25 +67,6 @@ export function UserMenu() {
         }
       }}
       afterSignOutUrl="/"
-    >
-      <UserButton.Menu>
-        <UserButton.Action label="profile">
-          <Link href="/profile" className="w-full cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </Link>
-        </UserButton.Action>
-        <UserButton.Action label="settings">
-          <Link href="/settings" className="w-full cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </Link>
-        </UserButton.Action>
-        <UserButton.Action label="sign-out" onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Sign out</span>
-        </UserButton.Action>
-      </UserButton.Menu>
-    </UserButton>
+    />
   );
 }

@@ -16,7 +16,6 @@ export function AIVoiceInputDemo() {
           <AIVoiceInput 
             onStart={() => console.log('Recording started')}
             onStop={handleStop}
-            enableVapi={true}
             demoMode={false}
           />   
       </div>

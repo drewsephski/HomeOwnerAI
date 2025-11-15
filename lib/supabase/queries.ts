@@ -132,7 +132,7 @@ export async function subscribeToCalls(userId: string, callback: (payload: { eve
   const channel = supabase
     .channel('calls-changes')
     .on(
-      'postgres_changes',
+      'postgres_changes' as any,
       {
         event: '*',
         schema: 'public',
@@ -150,7 +150,7 @@ export async function subscribeToBookings(userId: string, callback: (payload: { 
   const channel = supabase
     .channel('bookings-changes')
     .on(
-      'postgres_changes',
+      'postgres_changes' as any,
       {
         event: '*',
         schema: 'public',

@@ -39,7 +39,7 @@ export const startCall = async (vapi: Vapi, assistantConfig?: any) => {
   try {
     if (VAPI_CONFIG.workflowId) {
       // Use workflow if available
-      await vapi.start({ id: VAPI_CONFIG.workflowId });
+      await vapi.start(VAPI_CONFIG.workflowId);
     } else if (assistantConfig) {
       // Use provided assistant config
       await vapi.start(assistantConfig);
