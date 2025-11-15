@@ -62,6 +62,17 @@ export function AIVoiceInput({
     }
   }, [listening, submitted, transcript, time, onStop]);
 
+  // Handle manual stop when listening but transcript is empty
+  useEffect(() => {
+    if (!listening && submitted && !transcript.trim()) {
+      const timer = setTimeout(() => {
+        setSubmitted(false);
+        onStop?.(time);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [listening, submitted, transcript, time, onStop]);
+
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     let resetTimerId: NodeJS.Timeout;
@@ -128,8 +139,9 @@ export function AIVoiceInput({
       resetTranscript();
       setSubmitted(true);
       SpeechRecognition.startListening({
-        continuous: false,
+        continuous: true,
         language: 'en-US',
+        interimResults: true,
       });
     }
   };

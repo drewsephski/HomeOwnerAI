@@ -27,6 +27,7 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [voiceTranscript, setVoiceTranscript] = useState("");
+    const [isListening, setIsListening] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +65,7 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
         // Clear previous transcript and input
         setVoiceTranscript("");
         setInput("");
+        setIsListening(true);
     };
 
     const handleVoiceStop = (duration: number, transcript?: string) => {
@@ -73,6 +75,7 @@ export function ChatWidget({ size = "compact" }: ChatWidgetProps = {}) {
         }
         // Clear voice transcript state
         setVoiceTranscript("");
+        setIsListening(false);
     };
 
     const handleTranscriptUpdate = (transcript: string) => {
@@ -336,15 +339,29 @@ Perfect for plumbers, electricians, HVAC companies, general contractors, and any
                     {/* Input */}
                     <div className="p-3 border-t bg-card">
                         <div className="flex gap-2">
-                            <Input
-                                ref={inputRef}
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                placeholder="Type your message..."
-                                disabled={isLoading}
-                                className="flex-1"
-                            />
+                            <div className="flex-1 relative">
+                                <Input
+                                    ref={inputRef}
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyPress={handleKeyPress}
+                                    placeholder={isListening ? "Listening..." : "Type your message..."}
+                                    disabled={isLoading}
+                                    className={cn(
+                                        "flex-1",
+                                        isListening && "border-red-500 dark:border-red-400 animate-pulse"
+                                    )}
+                                />
+                                {isListening && (
+                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                        <div className="flex gap-1">
+                                            <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                            <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                            <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                             <Button
                                 onClick={handleSendMessage}
                                 disabled={!input.trim() || isLoading}
