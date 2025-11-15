@@ -7,7 +7,7 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 px-6 lg:px-8">
+      <section className="pt-36 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-6">
             <div className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
@@ -86,7 +86,7 @@ export default function Pricing() {
                 </div>
               </div>
               <Button asChild className="w-full btn-lift" variant="outline">
-                <Link href="/setup">Get Started</Link>
+                <Link href="/contact">Get Started</Link>
               </Button>
             </CardContent>
           </Card>
@@ -173,7 +173,7 @@ export default function Pricing() {
                 </div>
               </div>
               <Button asChild className="w-full btn-lift">
-                <Link href="/setup">Get Started</Link>
+                <Link href="/contact">Get Started</Link>
               </Button>
             </CardContent>
           </Card>
@@ -300,10 +300,10 @@ export default function Pricing() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" variant="secondary" className="btn-lift">
-              <Link href="/setup">Start in 48 Hours</Link>
+              <Link href="/contact">Start in 48 Hours</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="btn-lift border-background text-background hover:bg-background hover:text-foreground">
-              <Link href="#contact">Schedule Consultation</Link>
+              <Link href="/contact">Schedule Consultation</Link>
             </Button>
           </div>
         </div>

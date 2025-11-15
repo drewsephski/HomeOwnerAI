@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/components/auth-provider'
+import { ThemeProvider } from '@/components/theme-provider'
+import Navigation from '@/components/Navigation'
 
 // Make function globally available
 declare global {
@@ -25,19 +27,27 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-          <Toaster />
-          <script dangerouslySetInnerHTML={{
-            __html: `
-              window.openChatWidget = function() {
-                window.dispatchEvent(new CustomEvent('openChatWidget'));
-              }
-            `
-          }} />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navigation />
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+            <Toaster />
+            <script dangerouslySetInnerHTML={{
+              __html: `
+                window.openChatWidget = function() {
+                  window.dispatchEvent(new CustomEvent('openChatWidget'));
+                }
+              `
+            }} />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "@/components/NavLink";
 import { UserMenu } from "@/components/UserMenu";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigationItems = [
   {
@@ -69,11 +70,13 @@ const Navigation = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             <UserMenu />
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
             <Button
               variant="ghost"
               onClick={() => setIsOpen(!isOpen)}

@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Phone, Calendar, MessageSquare, BarChart3, Zap, Settings, Users, Clock, Shield, Globe, Database, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, Phone, Calendar, MessageSquare, BarChart3, Zap, Settings, Users, Clock, Shield, Globe, Database } from "lucide-react";
 import Link from "next/link";
 
 export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 px-6 lg:px-8">
+      <section className="pt-36 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-6">
             <div className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
@@ -27,7 +27,7 @@ export default function HowItWorks() {
       </section>
 
       {/* System Overview */}
-      <section className="py-16 px-6 lg:px-8 bg-muted/30">
+      <section className="py-16 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-heading text-3xl text-center mb-12">
             Complete call-to-customer system
@@ -126,7 +126,7 @@ export default function HowItWorks() {
                     <div>
                       <div className="font-medium">Voice Personality Design</div>
                       <div className="text-sm text-muted-foreground">
-                        Choose your AI's tone and style - professional and authoritative, 
+                        Choose your AI&apos;s tone and style - professional and authoritative, 
                         warm and friendly, or technical and precise.
                       </div>
                     </div>
@@ -522,9 +522,9 @@ export default function HowItWorks() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" variant="secondary" className="btn-lift">
-              <Link href="/setup">Start Your 48-Hour Setup</Link>
+              <Link href="/contact">Start Your 48-Hour Setup</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="btn-lift border-background text-background hover:bg-background hover:text-foreground">
+            <Button asChild size="lg" variant="default" className="btn-lift border-background text-background hover:bg-background hover:text-foreground">
               <Link href="/pricing">View Pricing Plans</Link>
             </Button>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, Calendar, BarChart3, MessageCircle } from "lucide-react";
 import { ChatWidget } from "@/components/ChatWidget";
@@ -14,7 +14,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <ChatWidget size="large" />
 
       {/* Hero Section - Calm, Confident, Direct */}
@@ -225,11 +224,12 @@ const Home = () => {
             Join service professionals who never lose another job to a missed call.
           </p>
           <Button 
+            asChild
             size="lg" 
             variant="secondary"
             className="btn-lift text-base px-8 py-6 bg-background text-foreground hover:bg-background/90"
           >
-            Get Started Today
+            <Link href="/contact">Get Started Today</Link>
           </Button>
         </div>
       </motion.section>
